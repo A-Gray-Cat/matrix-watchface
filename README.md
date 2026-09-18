@@ -9,6 +9,7 @@ Inspired by the digital-rain look from *The Matrix*. **Not affiliated with, endo
 - Time, date, weather (METAR-style), battery %
 - AMOLED: rain animates ~10 fps on wrist-raise, dim always-on after timeout
 - Solar (MIP): rain animates on wrist-raise, then freezes; screen stays on
+- **Glance** (`glance/`) — swipe-up terminal strip: time, battery, weather. Open it for HR and steps too.
 
 ## Devices
 
@@ -32,13 +33,13 @@ openssl genrsa 4096 | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -ou
 ```
 
 ```bash
-./build.sh fenix847mm          # 47/51mm AMOLED
-./build.sh fenix843mm          # 43mm AMOLED
-./build.sh fenix8pro47mm       # Pro / MicroLED
-./build.sh fenix8solar51mm     # 51mm Solar
+./build.sh fenix847mm          # watch face, 47/51mm AMOLED
+./build.sh fenix8solar51mm     # watch face, 51mm Solar
+./build.sh glance fenix847mm   # glance + full terminal page
+./build.sh glance fenix8solar51mm
 ```
 
-Writes `bin/SYS.MATRIX-<device>.prg`. `bin/` and `developer_key` are gitignored.
+Writes `bin/SYS.MATRIX-<device>.prg` or `bin/SYS.MATRIX-glance-<device>.prg`. `bin/` and `developer_key` are gitignored.
 
 ## Install
 
@@ -52,6 +53,8 @@ Fenix 8 uses **MTP**, not a Finder disk on macOS.
    - Mac: [OpenMTP](https://openmtp.ganeshrvel.com/).
 4. Wait for the copy to finish. Eject. The file vanishing from `Apps` is normal.
 5. Clock screen: hold **middle-left** → **Watch Face** → **SYS.MATRIX**.
+
+Glance: after copying `SYS.MATRIX-glance-*.prg`, unplug, then from the clock **press the bottom-left button** (glances) and find **SYS.MATRIX.gl**. Press **START** (top-right) to open the full dump.
 
 Left buttons, top to bottom: Light, **Menu**, Down.
 

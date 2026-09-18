@@ -1,14 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+APP="face"
 DEVICE="${1:-fenix847mm}"
 TAG="${2:-}"
-if [[ -n "$TAG" ]]; then
-  OUT="${ROOT}/bin/SYS.MATRIX-${TAG}-${DEVICE}.prg"
-else
-  OUT="${ROOT}/bin/SYS.MATRIX-${DEVICE}.prg"
+if [[ "${1:-}" == "glance" ]]; then
+  APP="glance"
+  DEVICE="${2:-fenix847mm}"
+  TAG="${3:-}"
 fi
 KEY="${ROOT}/developer_key"
+if [[ "$APP" == "glance" ]]; then
+  JUNGLE="${ROOT}/glance/monkey.jungle"
+  if [[ -n "$TAG" ]]; then
+    OUT="${ROOT}/bin/SYS.MATRIX-glance-${TAG}-${DEVICE}.prg"
+  else
+    OUT="${ROOT}/bin/SYS.MATRIX-glance-${DEVICE}.prg"
+  fi
+else
+  JUNGLE="${ROOT}/monkey.jungle"
+  if [[ -n "$TAG" ]]; then
+    OUT="${ROOT}/bin/SYS.MATRIX-${TAG}-${DEVICE}.prg"
+  else
+    OUT="${ROOT}/bin/SYS.MATRIX-${DEVICE}.prg"
+  fi
+fi
 CIQ_HOME="${HOME}/Library/Application Support/Garmin/ConnectIQ"
 
 if [[ -n "${CIQ_SDK:-}" ]]; then
@@ -37,6 +53,6 @@ export PATH="${SDK}/bin:${PATH}"
 mkdir -p "${ROOT}/bin"
 echo "SDK=$SDK"
 echo "device=$DEVICE"
-monkeyc -f "${ROOT}/monkey.jungle" -y "$KEY" -d "$DEVICE" -o "$OUT" -w
+monkeyc -f "$JUNGLE" -y "$KEY" -d "$DEVICE" -o "$OUT" -w
 echo "wrote $OUT"
 echo "sideload: copy that .prg to GARMIN/Apps on the watch (USB storage / MTP), then unplug."
