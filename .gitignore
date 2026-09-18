@@ -1,0 +1,20 @@
+# Signing key — never commit. Generate locally:
+#   openssl genrsa 4096 | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -out developer_key
+developer_key
+developer_key.*
+*.der
+*.pem
+
+# Build output
+bin/
+*.prg
+*.prg.debug.xml
+*-settings.json
+*.iq
+*.jungle.gen
+
+# Garmin / OS junk
+.DS_Store
+*.tmp
+__pycache__/
+*.pyc

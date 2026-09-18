@@ -1,0 +1,10 @@
+<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <settings>
+        <setting propertyKey="@Properties.style" title="@Strings.StyleTitle">
+            <settingConfig type="list">
+                <listEntry value="0">@Strings.StyleRain</listEntry>
+                <listEntry value="1">@Strings.StyleCrt</listEntry>
+            </settingConfig>
+        </setting>
+    </settings>
+</resources>
