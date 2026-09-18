@@ -11,8 +11,9 @@ class TerminalView extends WatchUi.View {
     const COL_DIM = 0x084E18;
 
     var _timer as Timer.Timer?;
-    var _body as FontType = Graphics.FONT_TINY;
-    var _tiny as FontType = Graphics.FONT_XTINY;
+    var _time as FontType = Graphics.FONT_NUMBER_MEDIUM;
+    var _body as FontType = Graphics.FONT_SMALL;
+    var _tiny as FontType = Graphics.FONT_TINY;
 
     function initialize() {
         View.initialize();
@@ -21,11 +22,15 @@ class TerminalView extends WatchUi.View {
     function onLayout(dc as Dc) as Void {
         var h = dc.getHeight();
         if (Graphics has :getVectorFont) {
-            var b = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoRegular"], :size => h * 0.045});
+            var tf = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoBold", "RobotoRegular"], :size => h * 0.12});
+            if (tf != null) {
+                _time = tf;
+            }
+            var b = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoRegular"], :size => h * 0.052});
             if (b != null) {
                 _body = b;
             }
-            var t = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.032});
+            var t = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.036});
             if (t != null) {
                 _tiny = t;
             }
@@ -52,42 +57,25 @@ class TerminalView extends WatchUi.View {
     function onUpdate(dc as Dc) as Void {
         var w = dc.getWidth();
         var h = dc.getHeight();
+        var cx = w / 2;
+        var just = Graphics.TEXT_JUSTIFY_CENTER;
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
 
-        var x = (w * 0.12).toNumber();
-        var y = (h * 0.12).toNumber();
-        var step = (h * 0.075).toNumber();
-        if (step < 16) {
-            step = 16;
-        }
-
         dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, _tiny, "root@fenix8:~# status", Graphics.TEXT_JUSTIFY_LEFT);
-        y += step;
-        line(dc, x, y, "time", Dump.timeWithSec());
-        y += step;
-        line(dc, x, y, "date", Dump.dateStr());
-        y += step;
-        line(dc, x, y, "wx  ", Dump.wxStr());
-        y += step;
-        line(dc, x, y, "batt", Dump.battStr());
-        y += step;
-        line(dc, x, y, "hr  ", Dump.hrStr());
-        y += step;
-        line(dc, x, y, "step", Dump.stepsStr());
-        y += step;
-        dc.setColor(COL_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, _tiny, "epoch " + Time.now().value().toString(), Graphics.TEXT_JUSTIFY_LEFT);
-        y += step;
-        dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, _tiny, "#", Graphics.TEXT_JUSTIFY_LEFT);
-    }
+        dc.drawText(cx, (h * 0.14).toNumber(), _tiny, "root@fenix8:~# status", just);
 
-    function line(dc as Dc, x as Number, y as Number, k as String, v as String) as Void {
-        dc.setColor(COL_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, _tiny, k, Graphics.TEXT_JUSTIFY_LEFT);
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x + (dc.getWidth() * 0.18).toNumber(), y, _body, v, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(cx, (h * 0.28).toNumber(), _time, Dump.timeWithSec(), just | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        dc.drawText(cx, (h * 0.42).toNumber(), _body, Dump.dateStr(), just);
+        dc.drawText(cx, (h * 0.51).toNumber(), _body, Dump.wxStr(), just);
+        dc.drawText(cx, (h * 0.60).toNumber(), _body, "batt  " + Dump.battStr(), just);
+        dc.drawText(cx, (h * 0.69).toNumber(), _body, "hr  " + Dump.hrStr() + "    step  " + Dump.stepsStr(), just);
+
+        dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, (h * 0.82).toNumber(), _tiny, "epoch " + Time.now().value().toString(), just);
+        dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, (h * 0.90).toNumber(), _tiny, "#", just);
     }
 }
