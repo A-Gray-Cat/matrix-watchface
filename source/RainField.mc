@@ -8,8 +8,8 @@ import Toybox.WatchUi;
 // half-width katakana packed as ASCII). Column state is four parallel
 // arrays so we never allocate per frame.
 class RainField {
-    const COLS = 32;
-    const ROWS = 24;
+    const COLS = 16;
+    const ROWS = 20;
 
     var head as Array<Float>;
     var speed as Array<Float>;
@@ -20,8 +20,8 @@ class RainField {
     var nGlyphs as Number = 0;
     var rainFont as FontType = Graphics.FONT_XTINY;
     var rainFontReady as Boolean = false;
-    var liveCols as Number = 24;
-    var liveRows as Number = 24;
+    var liveCols as Number = 16;
+    var liveRows as Number = 20;
     var rowH as Float = 16.0;
     var cx as Number = 227;
     var cy as Number = 227;
@@ -49,30 +49,17 @@ class RainField {
     }
 
     function layout(w as Number, h as Number) as Void {
-        var cols = w / 14;
-        if (cols > COLS) {
-            cols = COLS;
-        }
-        if (cols < 16) {
-            cols = 16;
-        }
-        liveCols = cols;
-        var rows = h / 21;
-        if (rows > ROWS) {
-            rows = ROWS;
-        }
-        if (rows < 14) {
-            rows = 14;
-        }
-        liveRows = rows;
-        rowH = h.toFloat() / rows;
+        // Same 16×20 grid as v3. Extra columns/long trails were the lag.
+        liveCols = COLS;
+        liveRows = ROWS;
+        rowH = h.toFloat() / liveRows;
         cx = w / 2;
         cy = h / 2;
         var r = cx - 8;
         r2 = r * r;
-        var colW = w.toFloat() / cols;
+        var colW = w.toFloat() / liveCols;
         var i;
-        for (i = 0; i < cols; i++) {
+        for (i = 0; i < liveCols; i++) {
             xs[i] = ((i.toFloat() + 0.5) * colW).toNumber();
         }
     }
@@ -85,7 +72,7 @@ class RainField {
         }
         // Rows per 100ms. A bit quicker than the last pass; v3 was 0.28–0.97.
         speed[c] = 0.38 + (Math.rand() % 65).toFloat() / 100.0;
-        trail[c] = 8 + (Math.rand() % 7);
+        trail[c] = 7 + (Math.rand() % 5);
         seed[c] = Math.rand();
     }
 
