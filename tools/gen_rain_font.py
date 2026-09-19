@@ -19,8 +19,8 @@ FONT_PATH = "/System/Library/Fonts/\u30d2\u30e9\u30ae\u30ce\u89d2\u30b4\u30b7\u3
 ASCII = "abcdefghijklmnopqrstuvwxyz0123456789*+$:=#"
 KANA = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ"
 
-CELL_W = 10
-CELL_H = 16
+CELL_W = 13
+CELL_H = 20
 PAD = 1
 ATLAS_W = 256
 
@@ -29,7 +29,7 @@ def load_face(size):
     return ImageFont.truetype(FONT_PATH, size, index=0)
 
 
-def render_kana(ch, face, src_size=64):
+def render_kana(ch, face, src_size=80):
     canvas = Image.new("L", (src_size, src_size), 0)
     draw = ImageDraw.Draw(canvas)
     draw.text((src_size // 8, 0), ch, font=face, fill=255)
@@ -38,7 +38,7 @@ def render_kana(ch, face, src_size=64):
         return Image.new("L", (CELL_W - 2, CELL_H - 2), 0)
     glyph = canvas.crop(bbox)
     glyph = ImageOps.mirror(glyph)
-    # Keep thin gothic strokes alive at 8-10px.
+    # Light thicken so strokes survive downsample, not a 1-bit smear.
     glyph = glyph.filter(ImageFilter.MaxFilter(3))
     gw, gh = glyph.size
     scale = min(float(CELL_W - 2) / gw, float(CELL_H - 2) / gh)
@@ -130,7 +130,7 @@ def preview(glyphs, path):
     im.save(path)
 
 
-def rain_sheet(glyphs, path, size=454, cols=32, rows=28):
+def rain_sheet(glyphs, path, size=454, cols=32, rows=21):
     """Rough high-power face preview so we can judge density."""
     by_ch = {ch: g for ch, g in glyphs}
     im = Image.new("RGB", (size, size), (0, 0, 0))
@@ -186,7 +186,7 @@ def main():
     assert len(ASCII) <= len(KANA), (len(ASCII), len(KANA))
     if not os.path.exists(FONT_PATH):
         raise SystemExit("missing Hiragino at %s" % FONT_PATH)
-    face = load_face(56)
+    face = load_face(72)
     glyphs = []
     for i, ch in enumerate(ASCII):
         glyphs.append((ch, render_kana(KANA[i], face)))

@@ -9,7 +9,7 @@ import Toybox.WatchUi;
 // arrays so we never allocate per frame.
 class RainField {
     const COLS = 32;
-    const ROWS = 28;
+    const ROWS = 24;
 
     var head as Array<Float>;
     var speed as Array<Float>;
@@ -49,7 +49,7 @@ class RainField {
     }
 
     function layout(w as Number, h as Number) as Void {
-        var cols = w / 16;
+        var cols = w / 14;
         if (cols > COLS) {
             cols = COLS;
         }
@@ -57,12 +57,12 @@ class RainField {
             cols = 16;
         }
         liveCols = cols;
-        var rows = h / 18;
+        var rows = h / 21;
         if (rows > ROWS) {
             rows = ROWS;
         }
-        if (rows < 16) {
-            rows = 16;
+        if (rows < 14) {
+            rows = 14;
         }
         liveRows = rows;
         rowH = h.toFloat() / rows;
@@ -83,9 +83,8 @@ class RainField {
         } else {
             head[c] = 0.0;
         }
-        // Rows per 100ms. Higher than v3 (0.28–0.97) so it reads as a fall,
-        // not a drift. step() scales by real elapsed time.
-        speed[c] = 0.45 + (Math.rand() % 80).toFloat() / 100.0;
+        // Rows per 100ms, around v3 (0.28–0.97). Last pass was a bit too fast.
+        speed[c] = 0.32 + (Math.rand() % 60).toFloat() / 100.0;
         trail[c] = 6 + (Math.rand() % 5);
         seed[c] = Math.rand();
     }
