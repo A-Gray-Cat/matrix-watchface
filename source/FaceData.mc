@@ -13,7 +13,10 @@ class FaceData {
     var battPct as Number = 0;
     var battStr as String = "0%";
     var epochStr as String = "";
+    var epochLine as String = "epoch 0";
     var prompt as String = "root@fenix8:~#";
+    var blink as String = "#";
+    var promptLine as String = "root@fenix8:~# #";
 
     var _lastSec as Number = -1;
     var _lastMin as Number = -1;
@@ -27,6 +30,12 @@ class FaceData {
         secStr = pad2(clock.sec);
 
         timeStr = pad2(clock.hour) + pad2(clock.min);
+        if ((clock.sec % 2) == 0) {
+            blink = "#";
+        } else {
+            blink = " ";
+        }
+        promptLine = prompt + " " + blink;
 
         if (clock.min != _lastMin) {
             _lastMin = clock.min;
@@ -37,6 +46,7 @@ class FaceData {
         battPct = stats.battery.toNumber();
         battStr = battPct.toString() + "%";
         epochStr = Time.now().value().toString();
+        epochLine = "epoch " + epochStr;
     }
 
     function refreshSlow() as Void {

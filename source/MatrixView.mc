@@ -16,6 +16,10 @@ class MatrixView extends WatchUi.WatchFace {
     var data as FaceData;
     var timer as Timer.Timer?;
     var sleeping as Boolean = false;
+    var pending as Boolean = false;
+    var amoled as Boolean = true;
+    var cachedStyle as Number = 0;
+    var styleSec as Number = -1;
     var w as Number = 454;
     var h as Number = 454;
     var timeFont as FontType = Graphics.FONT_NUMBER_HOT;
@@ -33,6 +37,8 @@ class MatrixView extends WatchUi.WatchFace {
     function onLayout(dc as Dc) as Void {
         w = dc.getWidth();
         h = dc.getHeight();
+        var s = System.getDeviceSettings();
+        amoled = (s has :requiresBurnInProtection) && s.requiresBurnInProtection;
         rain.layout(w, h);
         loadFonts();
     }
@@ -98,11 +104,18 @@ class MatrixView extends WatchUi.WatchFace {
     }
 
     function onTick() as Void {
+        // One step per actual paint. Extra 50ms ticks while a
+        // frame is still drawing just stack up and look like lag.
+        if (pending) {
+            return;
+        }
+        pending = true;
         rain.step();
         WatchUi.requestUpdate();
     }
 
     function onUpdate(dc as Dc) as Void {
+        pending = false;
         var low = sleeping;
         if (System has :getDisplayMode) {
             var mode = System.getDisplayMode();
@@ -112,7 +125,7 @@ class MatrixView extends WatchUi.WatchFace {
             low = (mode == System.DISPLAY_MODE_LOW_POWER);
         }
         // MIP Solar is always-on; don't collapse to the dim AMOLED layout.
-        if (low && isAmoled()) {
+        if (low && amoled) {
             drawAod(dc);
             return;
         }
@@ -124,17 +137,19 @@ class MatrixView extends WatchUi.WatchFace {
         }
     }
 
-    function isAmoled() as Boolean {
-        var s = System.getDeviceSettings();
-        return (s has :requiresBurnInProtection) && s.requiresBurnInProtection;
-    }
-
     function styleId() as Number {
+        var sec = System.getClockTime().sec;
+        if (sec == styleSec) {
+            return cachedStyle;
+        }
+        styleSec = sec;
         var settings = WatchFaceConfig.getSettings(null);
         if (settings != null && settings.styleId != null) {
-            return settings.styleId as Number;
+            cachedStyle = settings.styleId as Number;
+        } else {
+            cachedStyle = Application.Properties.getValue("style") as Number;
         }
-        return Application.Properties.getValue("style") as Number;
+        return cachedStyle;
     }
 
     function drawAod(dc as Dc) as Void {
@@ -160,7 +175,7 @@ class MatrixView extends WatchUi.WatchFace {
         var justCV = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
 
         dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.12).toNumber(), bodyFont, data.prompt + " " + cursor(), justC);
+        dc.drawText(cx, (h * 0.12).toNumber(), bodyFont, data.promptLine, justC);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, (h * 0.34).toNumber(), timeFont, data.timeStr, justCV);
@@ -173,7 +188,7 @@ class MatrixView extends WatchUi.WatchFace {
         dc.drawText(cx, (h * 0.74).toNumber(), bodyFont, data.battStr, justC);
 
         dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.88).toNumber(), bodyFont, "epoch " + data.epochStr, justC);
+        dc.drawText(cx, (h * 0.88).toNumber(), bodyFont, data.epochLine, justC);
     }
 
     function drawCrt(dc as Dc) as Void {
@@ -219,7 +234,7 @@ class MatrixView extends WatchUi.WatchFace {
         y += step;
         out(dc, lx, y, data.battStr);
         y += step;
-        cmd(dc, lx, y, "#  " + cursor());
+        cmd(dc, lx, y, "#  " + data.blink);
     }
 
     function cmd(dc as Dc, x as Number, y as Number, s as String) as Void {
@@ -232,11 +247,4 @@ class MatrixView extends WatchUi.WatchFace {
         dc.drawText(x, y, bodyFont, s, Graphics.TEXT_JUSTIFY_LEFT);
     }
 
-    function cursor() as String {
-        var clock = System.getClockTime();
-        if ((clock.sec % 2) == 0) {
-            return "#";
-        }
-        return " ";
-    }
 }
