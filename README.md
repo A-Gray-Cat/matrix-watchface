@@ -4,7 +4,7 @@ Phosphor / operator-terminal watch face for Garmin **fēnix 8**.
 
 Inspired by the digital-rain look from *The Matrix*. **Not affiliated with, endorsed by, or derived from Warner Bros. or The Matrix franchise.** Original code and assets; no movie fonts, stills, or dialogue.
 
-- **Rain** — falling code, time and data on top
+- **Rain** — falling code (v4 uses a tiny original bitmap “code” font; v3 is Kosugi katakana), time and data on top. Rain draws through `1915`.
 - **CRT** — `tty1` window in the rain (Connect IQ settings)
 - Time, date, weather (METAR-style), battery %
 - AMOLED: rain animates ~10 fps on wrist-raise, dim always-on after timeout
@@ -33,13 +33,22 @@ openssl genrsa 4096 | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -ou
 ```
 
 ```bash
-./build.sh fenix847mm          # watch face, 47/51mm AMOLED
-./build.sh fenix8solar51mm     # watch face, 51mm Solar
+./build.sh fenix847mm v4       # watch face → bin/v4/47.prg
+./build.sh fenix8solar51mm v4  # Solar → bin/v4/solar51.prg
 ./build.sh glance fenix847mm   # glance + full terminal page
-./build.sh glance fenix8solar51mm
 ```
 
-Writes `bin/SYS.MATRIX-<device>.prg` or `bin/SYS.MATRIX-glance-<device>.prg`. `bin/` and `developer_key` are gitignored.
+Versioned builds go in a short folder so they are easy to spot:
+
+| File | Watch |
+|---|---|
+| `bin/v3/47.prg` | Fenix 8 47/51mm AMOLED (Kosugi katakana rain) |
+| `bin/v4/47.prg` | same watch, code-style bitmap rain |
+| `bin/v3/43.prg` / `bin/v4/43.prg` | 43mm AMOLED |
+| `bin/v3/pro.prg` / `bin/v4/pro.prg` | Fenix 8 Pro |
+| `bin/v3/solar51.prg` / `bin/v4/solar51.prg` | 51mm Solar |
+
+Untagged builds still write `bin/SYS.MATRIX-<device>.prg`. `bin/` and `developer_key` are gitignored.
 
 ## Install
 

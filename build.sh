@@ -9,11 +9,23 @@ if [[ "${1:-}" == "glance" ]]; then
   DEVICE="${2:-fenix847mm}"
   TAG="${3:-}"
 fi
+short_device() {
+  case "$1" in
+    fenix847mm) echo "47" ;;
+    fenix843mm) echo "43" ;;
+    fenix8pro47mm) echo "pro" ;;
+    fenix8solar51mm) echo "solar51" ;;
+    *) echo "$1" ;;
+  esac
+}
+
 KEY="${ROOT}/developer_key"
+SHORT=""
 if [[ "$APP" == "glance" ]]; then
   JUNGLE="${ROOT}/glance/monkey.jungle"
   if [[ -n "$TAG" ]]; then
     OUT="${ROOT}/bin/SYS.MATRIX-glance-${TAG}-${DEVICE}.prg"
+    SHORT="${ROOT}/bin/${TAG}/glance-$(short_device "$DEVICE").prg"
   else
     OUT="${ROOT}/bin/SYS.MATRIX-glance-${DEVICE}.prg"
   fi
@@ -21,6 +33,7 @@ else
   JUNGLE="${ROOT}/monkey.jungle"
   if [[ -n "$TAG" ]]; then
     OUT="${ROOT}/bin/SYS.MATRIX-${TAG}-${DEVICE}.prg"
+    SHORT="${ROOT}/bin/${TAG}/$(short_device "$DEVICE").prg"
   else
     OUT="${ROOT}/bin/SYS.MATRIX-${DEVICE}.prg"
   fi
@@ -55,4 +68,9 @@ echo "SDK=$SDK"
 echo "device=$DEVICE"
 monkeyc -f "$JUNGLE" -y "$KEY" -d "$DEVICE" -o "$OUT" -w
 echo "wrote $OUT"
+if [[ -n "$SHORT" ]]; then
+  mkdir -p "$(dirname "$SHORT")"
+  cp "$OUT" "$SHORT"
+  echo "wrote $SHORT"
+fi
 echo "sideload: copy that .prg to GARMIN/Apps on the watch (USB storage / MTP), then unplug."

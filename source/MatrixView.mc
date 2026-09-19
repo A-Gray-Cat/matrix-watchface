@@ -33,6 +33,7 @@ class MatrixView extends WatchUi.WatchFace {
     function onLayout(dc as Dc) as Void {
         w = dc.getWidth();
         h = dc.getHeight();
+        rain.layout(w, h);
         loadFonts();
     }
 

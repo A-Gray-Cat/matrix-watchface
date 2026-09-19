@@ -2,12 +2,14 @@ import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Math;
 import Toybox.System;
+import Toybox.WatchUi;
 
-// Compact digital-rain field. Column state is four parallel arrays so we
-// never allocate per frame. Glyph strings are interned at init.
+// Digital rain. Glyphs are a tiny original bitmap font (mirrored
+// half-width katakana packed as ASCII). Column state is four parallel
+// arrays so we never allocate per frame.
 class RainField {
-    const COLS = 16;
-    const ROWS = 20;
+    const COLS = 40;
+    const ROWS = 36;
 
     var head as Array<Float>;
     var speed as Array<Float>;
@@ -17,10 +19,11 @@ class RainField {
     var nGlyphs as Number = 0;
     var rainFont as FontType = Graphics.FONT_XTINY;
     var rainFontReady as Boolean = false;
+    var liveCols as Number = 32;
+    var liveRows as Number = 28;
 
     function initialize() {
-        // Matrix rain: half-width katakana + digits + a few latin (the film mix).
-        var charset = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ012345789Z:=*+$";
+        var charset = "abcdefghijklmnopqrstuvwxyz0123456789*+$:=#";
         nGlyphs = charset.length();
         glyphs = new Array<String>[nGlyphs];
         var i;
@@ -38,22 +41,41 @@ class RainField {
         }
     }
 
+    function layout(w as Number, h as Number) as Void {
+        var cols = w / 12;
+        if (cols > COLS) {
+            cols = COLS;
+        }
+        if (cols < 16) {
+            cols = 16;
+        }
+        liveCols = cols;
+        var rows = h / 15;
+        if (rows > ROWS) {
+            rows = ROWS;
+        }
+        if (rows < 16) {
+            rows = 16;
+        }
+        liveRows = rows;
+    }
+
     function resetCol(c as Number, scatter as Boolean) as Void {
         if (scatter) {
-            head[c] = (Math.rand() % ROWS).toFloat();
+            head[c] = (Math.rand() % liveRows).toFloat();
         } else {
             head[c] = 0.0;
         }
-        speed[c] = 0.28 + (Math.rand() % 70).toFloat() / 100.0;
-        trail[c] = 7 + (Math.rand() % 8);
+        speed[c] = 0.38 + (Math.rand() % 90).toFloat() / 100.0;
+        trail[c] = 10 + (Math.rand() % 9);
         seed[c] = Math.rand();
     }
 
     function step() as Void {
         var c;
-        for (c = 0; c < COLS; c++) {
+        for (c = 0; c < liveCols; c++) {
             head[c] = head[c] + speed[c];
-            if (head[c] - trail[c].toFloat() > ROWS) {
+            if (head[c] - trail[c].toFloat() > liveRows) {
                 resetCol(c, false);
             }
         }
@@ -67,30 +89,27 @@ class RainField {
         return glyphs[n % nGlyphs];
     }
 
-    function prepareFont(h as Number) as Void {
+    function prepareFont() as Void {
         if (rainFontReady) {
             return;
         }
-        if (Graphics has :getVectorFont) {
-            var f = Graphics.getVectorFont({:face => ["KosugiRegular", "RobotoRegular"], :size => h * 0.038});
-            if (f != null) {
-                rainFont = f;
-            }
-        }
+        rainFont = WatchUi.loadResource(Rez.Fonts.MatrixRain) as FontType;
         rainFontReady = true;
     }
 
     function draw(dc as Graphics.Dc, w as Number, h as Number) as Void {
-        prepareFont(h);
-        var colW = w.toFloat() / COLS;
-        var rowH = h.toFloat() / ROWS;
+        prepareFont();
+        var cols = liveCols;
+        var rows = liveRows;
+        var colW = w.toFloat() / cols;
+        var rowH = h.toFloat() / rows;
         var cx = w / 2;
         var cy = h / 2;
         var r2 = (cx - 8) * (cx - 8);
         var font = rainFont;
         var c;
         var d;
-        for (c = 0; c < COLS; c++) {
+        for (c = 0; c < cols; c++) {
             var x = ((c.toFloat() + 0.5) * colW).toNumber();
             var len = trail[c];
             var hd = head[c];
