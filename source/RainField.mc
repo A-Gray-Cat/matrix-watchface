@@ -15,9 +15,12 @@ class RainField {
     var seed as Array<Number>;
     var glyphs as Array<String>;
     var nGlyphs as Number = 0;
+    var rainFont as FontType = Graphics.FONT_XTINY;
+    var rainFontReady as Boolean = false;
 
     function initialize() {
-        var charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:=*+$";
+        // Matrix rain: half-width katakana + digits + a few latin (the film mix).
+        var charset = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ012345789Z:=*+$";
         nGlyphs = charset.length();
         glyphs = new Array<String>[nGlyphs];
         var i;
@@ -64,13 +67,27 @@ class RainField {
         return glyphs[n % nGlyphs];
     }
 
+    function prepareFont(h as Number) as Void {
+        if (rainFontReady) {
+            return;
+        }
+        if (Graphics has :getVectorFont) {
+            var f = Graphics.getVectorFont({:face => ["KosugiRegular", "RobotoRegular"], :size => h * 0.038});
+            if (f != null) {
+                rainFont = f;
+            }
+        }
+        rainFontReady = true;
+    }
+
     function draw(dc as Graphics.Dc, w as Number, h as Number) as Void {
+        prepareFont(h);
         var colW = w.toFloat() / COLS;
         var rowH = h.toFloat() / ROWS;
         var cx = w / 2;
         var cy = h / 2;
         var r2 = (cx - 8) * (cx - 8);
-        var font = Graphics.FONT_XTINY;
+        var font = rainFont;
         var c;
         var d;
         for (c = 0; c < COLS; c++) {
