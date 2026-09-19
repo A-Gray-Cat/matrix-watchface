@@ -88,7 +88,7 @@ class MatrixView extends WatchUi.WatchFace {
         if (timer == null) {
             timer = new Timer.Timer();
         }
-        timer.start(method(:onTick), 100, true);
+        timer.start(method(:onTick), 50, true);
     }
 
     function stopTimer() as Void {

@@ -66,7 +66,9 @@ class RainField {
         } else {
             head[c] = 0.0;
         }
-        speed[c] = 0.38 + (Math.rand() % 90).toFloat() / 100.0;
+        // Per 50ms tick. Same fall rate as the old 100ms 0.38–1.28 range,
+        // but half the pixels per frame so columns slide instead of jump.
+        speed[c] = 0.16 + (Math.rand() % 40).toFloat() / 100.0;
         trail[c] = 10 + (Math.rand() % 9);
         seed[c] = Math.rand();
     }
@@ -81,8 +83,9 @@ class RainField {
         }
     }
 
-    function glyphAt(c as Number, row as Number) as String {
-        var n = seed[c] + c * 131 + row * 17;
+    // Glyphs stick to the trail slot, not the grid row, so a strip slides.
+    function glyphAt(c as Number, slot as Number) as String {
+        var n = seed[c] + c * 131 + slot * 17;
         if (n < 0) {
             n = -n;
         }
@@ -135,7 +138,7 @@ class RainField {
                     color = 0x084E18;
                 }
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.drawText(x, y, font, glyphAt(c, rowF.toNumber()), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+                dc.drawText(x, y, font, glyphAt(c, d), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
             }
         }
     }
