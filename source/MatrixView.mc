@@ -104,13 +104,12 @@ class MatrixView extends WatchUi.WatchFace {
     }
 
     function onTick() as Void {
-        // One step per actual paint. Extra 50ms ticks while a
-        // frame is still drawing just stack up and look like lag.
+        // One paint request at a time. rain.step() runs in onUpdate
+        // using elapsed ms so fall speed does not depend on fps.
         if (pending) {
             return;
         }
         pending = true;
-        rain.step();
         WatchUi.requestUpdate();
     }
 
@@ -129,6 +128,7 @@ class MatrixView extends WatchUi.WatchFace {
             drawAod(dc);
             return;
         }
+        rain.step();
         data.refresh();
         if (styleId() == 1) {
             drawCrt(dc);

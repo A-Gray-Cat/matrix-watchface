@@ -26,6 +26,7 @@ class RainField {
     var cx as Number = 227;
     var cy as Number = 227;
     var r2 as Number = 40000;
+    var lastMs as Number = 0;
 
     function initialize() {
         var charset = "abcdefghijklmnopqrstuvwxyz0123456789*+$:=#";
@@ -82,15 +83,26 @@ class RainField {
         } else {
             head[c] = 0.0;
         }
-        speed[c] = 0.16 + (Math.rand() % 40).toFloat() / 100.0;
+        // Rows per 100ms. Higher than v3 (0.28–0.97) so it reads as a fall,
+        // not a drift. step() scales by real elapsed time.
+        speed[c] = 0.45 + (Math.rand() % 80).toFloat() / 100.0;
         trail[c] = 6 + (Math.rand() % 5);
         seed[c] = Math.rand();
     }
 
     function step() as Void {
+        var now = System.getTimer();
+        var dt = now - lastMs;
+        lastMs = now;
+        if (dt <= 0) {
+            dt = 50;
+        } else if (dt > 200) {
+            dt = 200;
+        }
+        var scale = dt.toFloat() / 100.0;
         var c;
         for (c = 0; c < liveCols; c++) {
-            head[c] = head[c] + speed[c];
+            head[c] = head[c] + speed[c] * scale;
             if (head[c] - trail[c].toFloat() > liveRows) {
                 resetCol(c, false);
             }
