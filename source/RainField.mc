@@ -83,9 +83,9 @@ class RainField {
         } else {
             head[c] = 0.0;
         }
-        // Rows per 100ms, around v3 (0.28–0.97). Last pass was a bit too fast.
-        speed[c] = 0.32 + (Math.rand() % 60).toFloat() / 100.0;
-        trail[c] = 6 + (Math.rand() % 5);
+        // Rows per 100ms. A bit quicker than the last pass; v3 was 0.28–0.97.
+        speed[c] = 0.38 + (Math.rand() % 65).toFloat() / 100.0;
+        trail[c] = 8 + (Math.rand() % 7);
         seed[c] = Math.rand();
     }
 
@@ -108,8 +108,9 @@ class RainField {
         }
     }
 
-    function glyphAt(c as Number, slot as Number) as String {
-        var n = seed[c] + c * 131 + slot * 17;
+    // Keyed to grid row like v3, so a glyph mutates as it falls.
+    function glyphAt(c as Number, row as Number) as String {
+        var n = seed[c] + c * 131 + row * 17;
         if (n < 0) {
             n = -n;
         }
@@ -165,7 +166,7 @@ class RainField {
                 if (dx * dx + dy * dy > rad2) {
                     continue;
                 }
-                dc.drawText(x, y, font, glyphAt(c, d), just);
+                dc.drawText(x, y, font, glyphAt(c, rowF.toNumber()), just);
             }
         }
     }
