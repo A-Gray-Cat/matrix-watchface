@@ -17,19 +17,11 @@ module Dump {
 
     function timeStr() as String {
         var clock = System.getClockTime();
-        var hour = clock.hour;
-        var settings = System.getDeviceSettings();
-        if (!settings.is24Hour) {
-            hour = hour % 12;
-            if (hour == 0) {
-                hour = 12;
-            }
-        }
-        return pad2(hour) + ":" + pad2(clock.min);
+        return pad2(clock.hour) + pad2(clock.min);
     }
 
     function timeWithSec() as String {
-        return timeStr() + ":" + pad2(System.getClockTime().sec);
+        return timeStr() + pad2(System.getClockTime().sec);
     }
 
     function dateStr() as String {

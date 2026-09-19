@@ -66,7 +66,7 @@ class TerminalView extends WatchUi.View {
         dc.drawText(cx, (h * 0.14).toNumber(), _tiny, "root@fenix8:~# status", just);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.28).toNumber(), _time, Dump.timeWithSec(), just | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(cx, (h * 0.28).toNumber(), _time, Dump.timeStr(), just | Graphics.TEXT_JUSTIFY_VCENTER);
 
         dc.drawText(cx, (h * 0.42).toNumber(), _body, Dump.dateStr(), just);
         dc.drawText(cx, (h * 0.51).toNumber(), _body, Dump.wxStr(), just);

@@ -5,8 +5,8 @@ import Toybox.Time.Gregorian;
 import Toybox.Weather;
 
 class FaceData {
-    var timeStr as String = "00:00";
-    var secStr as String = ":00";
+    var timeStr as String = "0000";
+    var secStr as String = "00";
     var dateStr as String = "";
     var wxStr as String = "wx  --";
     var wxVal as String = "--";
@@ -24,17 +24,9 @@ class FaceData {
             return;
         }
         _lastSec = clock.sec;
-        secStr = ":" + pad2(clock.sec);
+        secStr = pad2(clock.sec);
 
-        var hour = clock.hour;
-        var settings = System.getDeviceSettings();
-        if (!settings.is24Hour) {
-            hour = hour % 12;
-            if (hour == 0) {
-                hour = 12;
-            }
-        }
-        timeStr = pad2(hour) + ":" + pad2(clock.min);
+        timeStr = pad2(clock.hour) + pad2(clock.min);
 
         if (clock.min != _lastMin) {
             _lastMin = clock.min;
