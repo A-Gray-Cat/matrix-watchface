@@ -178,13 +178,11 @@ class MatrixView extends WatchUi.WatchFace {
         dc.drawText(cx, (h * 0.12).toNumber(), bodyFont, data.promptLine, justC);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.34).toNumber(), timeFont, data.timeStr, justCV);
+        dc.drawText(cx, (h * 0.36).toNumber(), timeFont, data.timeStr, justCV);
 
-        dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.48).toNumber(), bodyFont, data.secStr, justC);
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.58).toNumber(), bodyFont, data.dateStr, justC);
-        dc.drawText(cx, (h * 0.66).toNumber(), bodyFont, data.wxVal, justC);
+        dc.drawText(cx, (h * 0.54).toNumber(), bodyFont, data.dateStr, justC);
+        dc.drawText(cx, (h * 0.64).toNumber(), bodyFont, data.wxVal, justC);
         dc.drawText(cx, (h * 0.74).toNumber(), bodyFont, data.battStr, justC);
 
         dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);

@@ -16,7 +16,7 @@ class FaceData {
     var epochLine as String = "epoch 0";
     var prompt as String = "root@fenix8:~#";
     var blink as String = "#";
-    var promptLine as String = "root@fenix8:~# #";
+    var promptLine as String = "root@fenix8:~# 00";
 
     var _lastSec as Number = -1;
     var _lastMin as Number = -1;
@@ -35,7 +35,7 @@ class FaceData {
         } else {
             blink = " ";
         }
-        promptLine = prompt + " " + blink;
+        promptLine = prompt + " " + secStr;
 
         if (clock.min != _lastMin) {
             _lastMin = clock.min;
