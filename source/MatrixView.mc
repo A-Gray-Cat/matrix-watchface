@@ -48,7 +48,7 @@ class MatrixView extends WatchUi.WatchFace {
             return;
         }
         if (Graphics has :getVectorFont) {
-            var tf = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoBold", "RobotoRegular"], :size => h * 0.26});
+            var tf = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoBold", "RobotoRegular"], :size => h * 0.30});
             if (tf != null) {
                 timeFont = tf;
             }
@@ -178,12 +178,12 @@ class MatrixView extends WatchUi.WatchFace {
         dc.drawText(cx, (h * 0.12).toNumber(), bodyFont, data.promptLine, justC);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.36).toNumber(), timeFont, data.timeStr, justCV);
+        dc.drawText(cx, (h * 0.37).toNumber(), timeFont, data.timeStr, justCV);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.54).toNumber(), bodyFont, data.dateStr, justC);
-        dc.drawText(cx, (h * 0.64).toNumber(), bodyFont, data.wxVal, justC);
-        dc.drawText(cx, (h * 0.74).toNumber(), bodyFont, data.battStr, justC);
+        dc.drawText(cx, (h * 0.56).toNumber(), bodyFont, data.dateStr, justC);
+        dc.drawText(cx, (h * 0.66).toNumber(), bodyFont, data.wxVal, justC);
+        dc.drawText(cx, (h * 0.76).toNumber(), bodyFont, data.battStr, justC);
 
         dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, (h * 0.88).toNumber(), bodyFont, data.epochLine, justC);

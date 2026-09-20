@@ -20,15 +20,15 @@ class TerminalView extends WatchUi.View {
     function onLayout(dc as Dc) as Void {
         var h = dc.getHeight();
         if (Graphics has :getVectorFont) {
-            var tf = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoBold", "RobotoRegular"], :size => h * 0.055});
+            var tf = Graphics.getVectorFont({:face => ["RobotoCondensedBold", "RobotoBold", "RobotoRegular"], :size => h * 0.09});
             if (tf != null) {
                 _time = tf;
             }
-            var b = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.038});
+            var b = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.046});
             if (b != null) {
                 _body = b;
             }
-            var t = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.032});
+            var t = Graphics.getVectorFont({:face => ["RobotoCondensedRegular", "RobotoRegular"], :size => h * 0.038});
             if (t != null) {
                 _tiny = t;
             }
@@ -64,19 +64,19 @@ class TerminalView extends WatchUi.View {
         dc.drawText(cx, (h * 0.10).toNumber(), _tiny, "root@fenix8:~#", just);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.20).toNumber(), _time, Dump.dateTimeStr(), just);
+        dc.drawText(cx, (h * 0.22).toNumber(), _time, Dump.dateTimeStr(), just | Graphics.TEXT_JUSTIFY_VCENTER);
 
         dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.32).toNumber(), _body, "epoch  " + Dump.epochStr(), just);
-        dc.drawText(cx, (h * 0.40).toNumber(), _body, "utc    " + Dump.utcStr(), just);
+        dc.drawText(cx, (h * 0.36).toNumber(), _body, "epoch  " + Dump.epochStr(), just);
+        dc.drawText(cx, (h * 0.44).toNumber(), _body, "utc    " + Dump.utcStr(), just);
 
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.50).toNumber(), _body, Dump.wxStr() + "    " + Dump.battStr(), just);
-        dc.drawText(cx, (h * 0.58).toNumber(), _body, "hr " + Dump.hrStr() + "   bb " + Status.bodyBattStr() + "   str " + Status.stressStr(), just);
-        dc.drawText(cx, (h * 0.66).toNumber(), _body, "step " + Status.stepsGoalStr(), just);
-        dc.drawText(cx, (h * 0.74).toNumber(), _body, "sun  " + Status.sunStr(), just);
+        dc.drawText(cx, (h * 0.54).toNumber(), _body, Dump.wxStr() + "    " + Dump.battStr(), just);
+        dc.drawText(cx, (h * 0.62).toNumber(), _body, "hr " + Dump.hrStr() + "   bb " + Status.bodyBattStr() + "   str " + Status.stressStr(), just);
+        dc.drawText(cx, (h * 0.70).toNumber(), _body, "step " + Status.stepsGoalStr(), just);
+        dc.drawText(cx, (h * 0.78).toNumber(), _body, "sun  " + Status.sunStr(), just);
 
         dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.84).toNumber(), _tiny, "wo  " + Status.workoutsLine(), just);
+        dc.drawText(cx, (h * 0.87).toNumber(), _tiny, "wo  " + Status.workoutsLine(), just);
     }
 }
