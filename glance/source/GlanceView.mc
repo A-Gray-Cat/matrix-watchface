@@ -21,23 +21,23 @@ class MatrixGlanceView extends WatchUi.GlanceView {
         if (!(Graphics has :FONT_GLANCE)) {
             font = Graphics.FONT_XTINY;
         }
-        var small = Graphics.FONT_XTINY;
         var y = 2;
         var lh = dc.getFontHeight(font);
         if (lh < 1) {
             lh = 14;
         }
 
-        dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(2, y, small, "root@fenix8", Graphics.TEXT_JUSTIFY_LEFT);
-        y += dc.getFontHeight(small) + 2;
-
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(2, y, font, Dump.timeStr() + "  " + Dump.battStr(), Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(2, y, font, Dump.dateTimeStr(), Graphics.TEXT_JUSTIFY_LEFT);
+        y += lh + 1;
+        if (y + lh <= h) {
+            dc.setColor(COL_BAR, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(2, y, font, Dump.battStr() + "  " + Dump.wxStr(), Graphics.TEXT_JUSTIFY_LEFT);
+        }
         y += lh + 1;
         if (y + lh <= h) {
             dc.setColor(COL_MID, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(2, y, font, Dump.wxStr(), Graphics.TEXT_JUSTIFY_LEFT);
+            dc.drawText(2, y, font, "epoch " + Dump.epochStr(), Graphics.TEXT_JUSTIFY_LEFT);
         }
     }
 }

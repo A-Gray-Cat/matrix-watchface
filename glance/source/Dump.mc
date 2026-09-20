@@ -24,6 +24,25 @@ module Dump {
         return timeStr() + pad2(System.getClockTime().sec);
     }
 
+    function dateTimeStr() as String {
+        var info = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        return (info.year as Number).toString() + "-" + pad2(info.month as Number) + "-" + pad2(info.day as Number) + " " + pad2(info.hour as Number) + ":" + pad2(info.min as Number) + ":" + pad2(info.sec as Number);
+    }
+
+    function utcStr() as String {
+        var local = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        var utc = Gregorian.utcInfo(Time.now(), Time.FORMAT_SHORT);
+        var clock = pad2(utc.hour as Number) + ":" + pad2(utc.min as Number) + ":" + pad2(utc.sec as Number) + "Z";
+        if ((utc.day as Number) != (local.day as Number) || (utc.month as Number) != (local.month as Number)) {
+            return (utc.year as Number).toString() + "-" + pad2(utc.month as Number) + "-" + pad2(utc.day as Number) + " " + clock;
+        }
+        return clock;
+    }
+
+    function epochStr() as String {
+        return Time.now().value().toString();
+    }
+
     function dateStr() as String {
         var info = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         var days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] as Array<String>;
